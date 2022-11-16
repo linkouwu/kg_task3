@@ -1,5 +1,6 @@
 package ru.vsu.cs.course2_Lyubchenko_kg.ui;
 
+import ru.vsu.cs.course2_Lyubchenko_kg.logic.Graph;
 import ru.vsu.cs.course2_Lyubchenko_kg.ui.component.RealPoint;
 import ru.vsu.cs.course2_Lyubchenko_kg.ui.component.WindowPoint;
 import ru.vsu.cs.course2_Lyubchenko_kg.ui.component.Line;
@@ -9,6 +10,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.List;
 
 public class GraphPanel extends JPanel {
 
@@ -153,6 +155,24 @@ public class GraphPanel extends JPanel {
                 g2.setColor(Color.lightGray);
                 drawLine(new Line(new RealPoint(-wc.getRealWidth(), i), new RealPoint(wc.getRealWidth(), i)), g2, wc);
                 drawLine(new Line(new RealPoint(-wc.getRealWidth(), -i), new RealPoint(wc.getRealWidth(), -i)), g2, wc);
+            }
+        }
+    }
+
+    public void drawFunction(String f, double par, Graphics2D g2, WindowConverter wc){
+        List<Point> l;
+        if (par!=Integer.MAX_VALUE){
+            l = Graph.graphArray(f, par, (int) wc.getRealWidth(), (int) wc.getRealHeight());
+        } else {
+            l = Graph.graphArray(f, (int) wc.getRealWidth(), (int) wc.getRealHeight());
+        }
+        Point[] arr = l.toArray(new Point[0]);
+        for (int i = 0; i < arr.length - 1; i++) {
+            Point p = arr[i];
+            Point p1 = arr[i + 1];
+            assert p != null;
+            if (p1.x-p.x<=1) {
+               drawLine(new Line(new RealPoint(p.x, p.y), new RealPoint(p1.x, p1.y)), g2, wc);
             }
         }
     }
