@@ -1,48 +1,40 @@
 package ru.vsu.cs.course2_Lyubchenko_kg.logic;
 
+import ru.vsu.cs.course2_Lyubchenko_kg.ui.component.RealPoint;
+
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Bezier {
-    public static Point[] bezier(Point p0, Point p1, Point p2, Point p3) {
-        Point[] CubicArray = cubicBezier(p0, p1, p2, p3);
-        return steps(CubicArray);
+    public static RealPoint[] bezier(ArrayList<RealPoint> pointList) {
+        RealPoint[] pointArray = pointList.toArray(new RealPoint[0]);
+        return stepsBezier(pointArray);
     }
 
-    public static Point[] steps(Point[] array) {
-        Point c0 = array[0];
-        Point c1 = array[1];
-        Point c2 = array[2];
-        Point c3 = array[3];
+    private static RealPoint[] stepsBezier(RealPoint[] array) {
         double step = 0.01;
-        Point[] array2 = new Point[(int)(1 / step)];
-        int i = 0;
+        RealPoint[] array2 = new RealPoint[(int) (1 / step)];
+        int n = array.length;
 
-        for(double s = 0.0; s < 1.0; s += step) {
-            int x = (int)((double)c0.x + (double)c1.x * s + (double)c2.x * s * s + (double)c3.x * s * s * s);
-            int y = (int)((double)c0.y + (double)c1.y * s + (double)c2.y * s * s + (double)c3.y * s * s * s);
-            array2[i] = new Point(x, y);
-            ++i;
+        for (double t = 0.00; t < 1; t += step) {
+            double x = 0;
+            double y = 0;
+            for (int i = 0; i < n; i++) {
+                x += array[i].getX() * Math.pow(t, i) * Math.pow((1 - t), n - i - 1) * (int) (factorial(n - 1) / factorial(i) / factorial(n - i - 1));
+                y += array[i].getY() * Math.pow(t, i) * Math.pow((1 - t), n - i - 1) * (int) (factorial(n - 1) / factorial(i) / factorial(n - i - 1));
+            }
+
+            array2[(int) Math.round(t * (1 / step))] = new RealPoint((int) Math.round(x), (int) Math.round(y));
         }
 
         return array2;
     }
 
-    public static Point[] cubicBezier(Point p0, Point p1, Point p2, Point p3) {
-        Point c0 = new Point();
-        Point c1 = new Point();
-        Point c2 = new Point();
-        Point c3 = new Point();
-
-        c0.x = p0.x;
-        c1.x = -3 * p0.x + 3 * p1.x;
-        c2.x = 3 * p0.x + -6 * p1.x + 3 * p2.x;
-        c3.x = -1 * p0.x + 3 * p1.x + -3 * p2.x + p3.x;
-
-        c0.y = p0.y;
-        c1.y = -3 * p0.y + 3 * p1.y;
-        c2.y = 3 * p0.y + -6 * p1.y + 3 * p2.y;
-        c3.y = -1 * p0.y + 3 * p1.y + -3 * p2.y + p3.y;
-
-        return new Point[]{c0, c1, c2, c3};
+    private static long factorial(int n) {
+        long fact = 1;
+        for (int i = 2; i <= n; i++) {
+            fact = fact * i;
+        }
+        return fact;
     }
 }

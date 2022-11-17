@@ -61,31 +61,15 @@ public class WindowConverter {
         return x;
     }
 
-    public void setX(double x) {
-        this.x = x;
-    }
-
     public double getY() {
         return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
     }
 
     public double getRealWidth() {
         return realWidth;
     }
 
-    public void setRealWidth(double realWidth) {
-        this.realWidth = realWidth;
-    }
-
     public double getRealHeight() {
         return realHeight;
-    }
-
-    public void setRealHeight(double realHeight) {
-        this.realHeight = realHeight;
     }
 }

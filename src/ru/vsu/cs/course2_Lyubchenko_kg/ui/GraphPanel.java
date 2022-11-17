@@ -1,5 +1,6 @@
 package ru.vsu.cs.course2_Lyubchenko_kg.ui;
 
+import ru.vsu.cs.course2_Lyubchenko_kg.logic.Bezier;
 import ru.vsu.cs.course2_Lyubchenko_kg.logic.Graph;
 import ru.vsu.cs.course2_Lyubchenko_kg.ui.component.RealPoint;
 import ru.vsu.cs.course2_Lyubchenko_kg.ui.component.WindowPoint;
@@ -10,6 +11,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GraphPanel extends JPanel {
@@ -17,9 +19,10 @@ public class GraphPanel extends JPanel {
     private final WindowConverter converter;
     private WindowPoint prevPoint;
     private static String function;
+    private static ArrayList<RealPoint> bezierPoint;
 
     public GraphPanel() {
-        converter = new WindowConverter(800, 600, -50, 50, 100, 100);
+        converter = new WindowConverter(800, 600, -100, 100, 200, 200);
 
         this.addMouseMotionListener(new MouseMotionListener() {
             @Override
@@ -87,9 +90,14 @@ public class GraphPanel extends JPanel {
 
         drawCoordinates(converter, g2);
         drawGrid(converter, g2);
-        if (function != null){
+
+        if (function != null) {
             drawFunction(function, g2, converter);
         }
+        if (bezierPoint != null) {
+            drawBezier(bezierPoint, g2, converter);
+        }
+
         repaint();
     }
 
@@ -143,8 +151,10 @@ public class GraphPanel extends JPanel {
                 g2.drawString(String.valueOf(i), wc.r2s(rp).getX(), wc.r2s(rp).getY());
             } else {
                 RealPoint rp = new RealPoint(i, 0.1 * step);
-                g2.drawString(String.valueOf(i), wc.r2s(rp).getX(),  wc.r2s(rp).getY());
+
+                g2.drawString(String.valueOf(i), wc.r2s(rp).getX(), wc.r2s(rp).getY());
                 g2.drawString(String.valueOf(-i), wc.r2s(rp.invertX()).getX(), (float) wc.r2s(rp).getY());
+
                 g2.setColor(Color.lightGray);
                 drawLine(new Line(new RealPoint(i, -wc.getRealHeight()), new RealPoint(i, wc.getRealHeight() * 2)), g2, wc);
                 drawLine(new Line(new RealPoint(-i, -wc.getRealHeight()), new RealPoint(-i, wc.getRealHeight() * 2)), g2, wc);
@@ -153,9 +163,11 @@ public class GraphPanel extends JPanel {
         for (int i = 0; i < wc.getRealHeight(); i += step) {
             if (i != 0) {
                 RealPoint rp = new RealPoint(0.1 * step, i);
+
                 g2.setColor(Color.BLACK);
                 g2.drawString(String.valueOf(i), wc.r2s(rp).getX(), wc.r2s(rp).getY());
                 g2.drawString(String.valueOf(-i), wc.r2s(rp).getX(), wc.r2s(rp.invertY()).getY());
+
                 g2.setColor(Color.lightGray);
                 drawLine(new Line(new RealPoint(-wc.getRealWidth(), i), new RealPoint(wc.getRealWidth(), i)), g2, wc);
                 drawLine(new Line(new RealPoint(-wc.getRealWidth(), -i), new RealPoint(wc.getRealWidth(), -i)), g2, wc);
@@ -163,21 +175,37 @@ public class GraphPanel extends JPanel {
         }
     }
 
-    public void drawFunction(String f, Graphics2D g2, WindowConverter wc){
-        List<Point> l = Graph.graphArray(f);
-        Point[] arr = l.toArray(new Point[0]);
+    private void drawFunction(String f, Graphics2D g2, WindowConverter wc) {
+        List<RealPoint> l = Graph.graphArray(f);
+        RealPoint[] arr = l.toArray(new RealPoint[0]);
+
+        drawArray(arr, true, g2, wc);
+    }
+
+    private void drawBezier(ArrayList<RealPoint> point, Graphics2D g2, WindowConverter wc) {
+        RealPoint[] pointDraw = Bezier.bezier(point);
+        drawArray(pointDraw, false, g2, wc);
+    }
+
+    private void drawArray(RealPoint[] arr, boolean isTrue, Graphics2D g2, WindowConverter wc) {
         for (int i = 0; i < arr.length - 1; i++) {
-            Point p = arr[i];
-            Point p1 = arr[i + 1];
-            assert p != null;
-            if (p1.x-p.x<=1) {
+            RealPoint p = arr[i];
+            RealPoint p1 = arr[i + 1];
+
+            if (isTrue) {
+                assert p != null;
+                if (p1.getX() - p.getX() <= 1) {
+                    g2.setColor(Color.red);
+                    drawLine(new Line(p, p1), g2, wc);
+                }
+            } else {
                 g2.setColor(Color.red);
-               drawLine(new Line(new RealPoint(p.x, p.y), new RealPoint(p1.x, p1.y)), g2, wc);
+                drawLine(new Line(p, p1), g2, wc);
             }
         }
     }
 
-    public static void drawLine(Line line, Graphics2D g2, WindowConverter wc) {
+    private static void drawLine(Line line, Graphics2D g2, WindowConverter wc) {
         double dx, dy, steps, x, y, k;
         double xc, yc;
 
@@ -205,5 +233,7 @@ public class GraphPanel extends JPanel {
         GraphPanel.function = function;
     }
 
-
+    public static void setBezierPoint(ArrayList<RealPoint> bezierPoint) {
+        GraphPanel.bezierPoint = bezierPoint;
+    }
 }

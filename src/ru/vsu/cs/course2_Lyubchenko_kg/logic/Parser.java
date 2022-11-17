@@ -2,7 +2,7 @@ package ru.vsu.cs.course2_Lyubchenko_kg.logic;
 
 import net.objecthunter.exp4j.*;
 
-public class Parser{
+public class Parser {
     private String func;
     private final Expression expression;
 
@@ -11,19 +11,18 @@ public class Parser{
         this.expression = new ExpressionBuilder(func).variable("x").build();
     }
 
-    public boolean isSqrtLog(){
+    public boolean isSqrtLog() {
         return func.contains("sqrt") || func.contains("log");
     }
 
     public double solve(double x) {
-        try{
+        try {
             expression.setVariable("x", x);
             return expression.evaluate();
-        } catch (Throwable e){
-            if (e instanceof ArithmeticException && "Division by zero!".equals((e.getMessage()))){
+        } catch (Throwable e) {
+            if (e instanceof ArithmeticException && "Division by zero!".equals((e.getMessage()))) {
                 return Double.MAX_VALUE;
-            }
-            else{
+            } else {
                 return Double.NaN;
             }
         }
