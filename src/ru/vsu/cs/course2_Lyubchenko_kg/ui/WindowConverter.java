@@ -3,8 +3,6 @@ package ru.vsu.cs.course2_Lyubchenko_kg.ui;
 import ru.vsu.cs.course2_Lyubchenko_kg.ui.component.RealPoint;
 import ru.vsu.cs.course2_Lyubchenko_kg.ui.component.WindowPoint;
 
-import java.awt.*;
-
 public class WindowConverter {
     private int windowWidth, windowHeight;
     private double x, y;
@@ -19,13 +17,13 @@ public class WindowConverter {
         this.realHeight = realHeight;
     }
 
-    public WindowPoint r2s(RealPoint p) {
+    public WindowPoint realToWindow(RealPoint p) {
         int x = (int) (windowWidth * (p.getX() - this.x) / realWidth);
         int y = (int) (windowHeight * (this.y - p.getY()) / realHeight);
         return new WindowPoint(x, y);
     }
 
-    public RealPoint s2r(WindowPoint p) {
+    public RealPoint windowToReal(WindowPoint p) {
         double x = this.x + p.getX() * realWidth / windowWidth;
         double y = this.y - p.getY() * realHeight / windowHeight;
         return new RealPoint(x, y);

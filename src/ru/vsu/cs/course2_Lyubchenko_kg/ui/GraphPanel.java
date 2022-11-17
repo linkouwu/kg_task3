@@ -28,8 +28,8 @@ public class GraphPanel extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e) {
                 WindowPoint curPoint = new WindowPoint(e.getX(), e.getY());
-                RealPoint p1 = converter.s2r(curPoint);
-                RealPoint p2 = converter.s2r(prevPoint);
+                RealPoint p1 = converter.windowToReal(curPoint);
+                RealPoint p2 = converter.windowToReal(prevPoint);
                 RealPoint delta = new RealPoint(p2.getX() - p1.getX(), p2.getY() - p1.getY());
                 converter.moveCorner(delta);
                 prevPoint = curPoint;
@@ -148,12 +148,12 @@ public class GraphPanel extends JPanel {
             g2.setColor(Color.BLACK);
             if (i == 0) {
                 RealPoint rp = new RealPoint(0.1 * step, 0.1 * step);
-                g2.drawString(String.valueOf(i), wc.r2s(rp).getX(), wc.r2s(rp).getY());
+                g2.drawString(String.valueOf(i), wc.realToWindow(rp).getX(), wc.realToWindow(rp).getY());
             } else {
                 RealPoint rp = new RealPoint(i, 0.1 * step);
 
-                g2.drawString(String.valueOf(i), wc.r2s(rp).getX(), wc.r2s(rp).getY());
-                g2.drawString(String.valueOf(-i), wc.r2s(rp.invertX()).getX(), (float) wc.r2s(rp).getY());
+                g2.drawString(String.valueOf(i), wc.realToWindow(rp).getX(), wc.realToWindow(rp).getY());
+                g2.drawString(String.valueOf(-i), wc.realToWindow(rp.invertX()).getX(), (float) wc.realToWindow(rp).getY());
 
                 g2.setColor(Color.lightGray);
                 drawLine(new Line(new RealPoint(i, -wc.getRealHeight()), new RealPoint(i, wc.getRealHeight() * 2)), g2, wc);
@@ -165,8 +165,8 @@ public class GraphPanel extends JPanel {
                 RealPoint rp = new RealPoint(0.1 * step, i);
 
                 g2.setColor(Color.BLACK);
-                g2.drawString(String.valueOf(i), wc.r2s(rp).getX(), wc.r2s(rp).getY());
-                g2.drawString(String.valueOf(-i), wc.r2s(rp).getX(), wc.r2s(rp.invertY()).getY());
+                g2.drawString(String.valueOf(i), wc.realToWindow(rp).getX(), wc.realToWindow(rp).getY());
+                g2.drawString(String.valueOf(-i), wc.realToWindow(rp).getX(), wc.realToWindow(rp.invertY()).getY());
 
                 g2.setColor(Color.lightGray);
                 drawLine(new Line(new RealPoint(-wc.getRealWidth(), i), new RealPoint(wc.getRealWidth(), i)), g2, wc);
@@ -209,8 +209,8 @@ public class GraphPanel extends JPanel {
         double dx, dy, steps, x, y, k;
         double xc, yc;
 
-        WindowPoint p1 = wc.r2s(line.getP1());
-        WindowPoint p2 = wc.r2s(line.getP2());
+        WindowPoint p1 = wc.realToWindow(line.getP1());
+        WindowPoint p2 = wc.realToWindow(line.getP2());
 
         dx = p2.getX() - p1.getX();
         dy = p2.getY() - p1.getY();
