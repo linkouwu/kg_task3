@@ -16,9 +16,10 @@ public class GraphPanel extends JPanel {
 
     private final WindowConverter converter;
     private WindowPoint prevPoint;
+    private static String function;
 
     public GraphPanel() {
-        converter = new WindowConverter(800, 600, -25, 25, 50, 50);
+        converter = new WindowConverter(800, 600, -50, 50, 100, 100);
 
         this.addMouseMotionListener(new MouseMotionListener() {
             @Override
@@ -86,6 +87,9 @@ public class GraphPanel extends JPanel {
 
         drawCoordinates(converter, g2);
         drawGrid(converter, g2);
+        if (function != null){
+            drawFunction(function, g2, converter);
+        }
         repaint();
     }
 
@@ -159,19 +163,15 @@ public class GraphPanel extends JPanel {
         }
     }
 
-    public void drawFunction(String f, double par, Graphics2D g2, WindowConverter wc){
-        List<Point> l;
-        if (par!=Integer.MAX_VALUE){
-            l = Graph.graphArray(f, par, (int) wc.getRealWidth(), (int) wc.getRealHeight());
-        } else {
-            l = Graph.graphArray(f, (int) wc.getRealWidth(), (int) wc.getRealHeight());
-        }
+    public void drawFunction(String f, Graphics2D g2, WindowConverter wc){
+        List<Point> l = Graph.graphArray(f);
         Point[] arr = l.toArray(new Point[0]);
         for (int i = 0; i < arr.length - 1; i++) {
             Point p = arr[i];
             Point p1 = arr[i + 1];
             assert p != null;
             if (p1.x-p.x<=1) {
+                g2.setColor(Color.red);
                drawLine(new Line(new RealPoint(p.x, p.y), new RealPoint(p1.x, p1.y)), g2, wc);
             }
         }
@@ -200,4 +200,10 @@ public class GraphPanel extends JPanel {
         int shift = 2;
         g.fillOval(x - shift, y - shift, 2, 2);
     }
+
+    public static void setFunction(String function) {
+        GraphPanel.function = function;
+    }
+
+
 }

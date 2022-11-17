@@ -10,8 +10,8 @@ public class Window extends JFrame{
     private JTextField formulaTextField;
     private JButton drawFunctionButton;
     private JButton drawBezierButton;
-    private JButton clearButton;
-    private JTextField parTextField;
+    private JButton clearFunctionButton;
+    private JTabbedPane tabbedPane1;
 
     public Window(){
         this.setContentPane(panel1);
@@ -21,8 +21,7 @@ public class Window extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 String formula = formulaTextField.getText();
-                Double par = Double.parseDouble(parTextField.getText());
-                // мне лень
+                GraphPanel.setFunction(formula);
             }
         });
     }
